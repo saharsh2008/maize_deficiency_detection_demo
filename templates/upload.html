@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Maize Deficiency Detection</title>
+</head>
+<body>
+    <h1>Maize Deficiency Detection</h1>
+
+    <form method='POST' enctype="multipart/form-data">
+        <input type='file' name='file' accept='image/*' required>
+        <button type="submit">Upload</button>
+    </form>
+
+    {% if img_url %}
+        <h2>Uploaded Image</h2>
+        <img src="{{img_url}}" alt="uploaded-image" style='max-width: 400px;'>
+        
+        {% if not results and not error %}
+            <form method='POST' action='/predict'>
+                <input type='hidden' name='filename' value='{{ filename }}'>
+                <button type="submit">Analyze</button>
+            </form>
+        {% endif %}
+
+        {% if error %}
+            <h3>{{ error }}</h3>
+        {% endif %}
+
+        {% if results %}
+            <h3>Analysis Results</h3>
+            <p><strong>Detected:</strong> {{ results.class }}</p>
+            
+            <h4>Analysis</h4>
+            <p>{{ results.analysis }}</p>
+            
+            <h4>Organic Solutions</h4>
+            <ul>
+                {% for item in results.remedies %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endif %}
+
+</body>
+</html>
